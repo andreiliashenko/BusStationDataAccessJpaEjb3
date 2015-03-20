@@ -13,5 +13,4 @@ public class BooleanConverter implements AttributeConverter<Boolean, Integer> {
     public Boolean convertToEntityAttribute(Integer y) {
         return y != null && !y.equals(0);
     }
-
 }
