@@ -1,0 +1,90 @@
+package com.anli.busstation.dal.jpa.entities.geography;
+
+import com.anli.busstation.dal.jpa.entities.BSEntityImpl;
+import com.anli.busstation.dal.interfaces.entities.BSEntity;
+import com.anli.busstation.dal.interfaces.entities.geography.Road;
+import com.anli.busstation.dal.interfaces.entities.geography.Station;
+import java.math.BigDecimal;
+import javax.persistence.AttributeOverride;
+import javax.persistence.Basic;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+
+@Entity(name = "Road")
+@Table(name = "roads")
+@AttributeOverride(name = "id", column = @Column(name = "road_id"))
+public class RoadImpl extends BSEntityImpl implements Road {
+
+    @OneToOne
+    @JoinColumn(name = "a_station", referencedColumnName = "station_id")
+    protected StationImpl aStation;
+    @OneToOne
+    @JoinColumn(name = "z_station", referencedColumnName = "station_id")
+    protected StationImpl zStation;
+    @Column(name = "\"length\"")
+    protected Integer length;
+    @Column(name = "ride_price")
+    protected BigDecimal ridePrice;
+
+    @Override
+    public Station getAStation() {
+        return aStation;
+    }
+
+    @Override
+    public void setAStation(Station aStation) {
+        this.aStation = (StationImpl) aStation;
+    }
+
+    @Override
+    public Station getZStation() {
+        return zStation;
+    }
+
+    @Override
+    public void setZStation(Station zStation) {
+        this.zStation = (StationImpl) zStation;
+    }
+
+    @Override
+    public Integer getLength() {
+        return length;
+    }
+
+    @Override
+    public void setLength(Integer length) {
+        this.length = length;
+    }
+
+    @Override
+    public BigDecimal getRidePrice() {
+        return ridePrice;
+    }
+
+    @Override
+    public void setRidePrice(BigDecimal ridePrice) {
+        this.ridePrice = ridePrice;
+    }
+
+    @Override
+    public boolean deepEquals(BSEntity comparee) {
+        if (!this.equals(comparee)) {
+            return false;
+        }
+        RoadImpl roadComparee = (RoadImpl) comparee;
+        return nullableDeepEquals(this.aStation, roadComparee.aStation)
+                && nullableDeepEquals(this.zStation, roadComparee.zStation)
+                && nullableEquals(this.length, roadComparee.length)
+                && nullableEquals(this.ridePrice, roadComparee.ridePrice);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " aStation = {" + aStation + "} zStation = {"
+                + zStation + "} length = " + length + " ridePrice = " + ridePrice;
+    }
+}
