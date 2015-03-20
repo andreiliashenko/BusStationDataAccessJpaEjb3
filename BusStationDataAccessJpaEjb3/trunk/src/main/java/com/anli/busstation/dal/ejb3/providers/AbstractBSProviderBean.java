@@ -28,7 +28,7 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
 
     @PersistenceContext(unitName = "busstation")
     protected EntityManager manager;
-    
+
     @Inject
     protected GlobalQueryHolder queryHolder;
 

@@ -6,11 +6,9 @@ import com.anli.busstation.dal.interfaces.entities.geography.Road;
 import com.anli.busstation.dal.interfaces.entities.geography.Station;
 import java.math.BigDecimal;
 import javax.persistence.AttributeOverride;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
