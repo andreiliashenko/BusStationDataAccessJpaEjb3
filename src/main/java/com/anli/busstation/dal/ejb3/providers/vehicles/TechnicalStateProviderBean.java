@@ -27,34 +27,34 @@ public class TechnicalStateProviderBean
     }
 
     @Override
-    public List<TechnicalState> findByDescriptionRegexp(String descrRegexp) {
-        return findByRegexp("description", descrRegexp);
+    public List<TechnicalState> findByDescriptionRegexp(String descriptionRegexp) {
+        return findByRegexp("description", descriptionRegexp);
     }
 
     @Override
-    public List<TechnicalState> findByDifficultyLevel(Integer diffLevel) {
-        return findByEquals("difficultyLevel", diffLevel);
+    public List<TechnicalState> findByDifficultyLevel(Integer difficultyLevel) {
+        return findByEquals("difficultyLevel", difficultyLevel);
     }
 
     @Override
-    public List<TechnicalState> findByDifficultyLevelRange(Integer dLLeft, boolean strictLeft,
-            Integer dLRight, boolean strictRight) {
-        return findByRange("difficultyLevel", dLLeft, strictLeft, dLRight, strictRight);
+    public List<TechnicalState> findByDifficultyLevelRange(Integer difficultyLevelLeft, boolean strictLeft,
+            Integer difficultyLevelRight, boolean strictRight) {
+        return findByRange("difficultyLevel", difficultyLevelLeft, strictLeft, difficultyLevelRight, strictRight);
     }
 
     @Override
-    public List<BigInteger> collectIdsByDescriptionRegexp(String descrRegexp) {
-        return collectIdsByRegexp("description", descrRegexp);
+    public List<BigInteger> collectIdsByDescriptionRegexp(String descriptionRegexp) {
+        return collectIdsByRegexp("description", descriptionRegexp);
     }
 
     @Override
-    public List<BigInteger> collectIdsByDifficultyLevel(Integer diffLevel) {
-        return collectIdsByEquals("difficultyLevel", diffLevel);
+    public List<BigInteger> collectIdsByDifficultyLevel(Integer difficultyLevel) {
+        return collectIdsByEquals("difficultyLevel", difficultyLevel);
     }
 
     @Override
-    public List<BigInteger> collectIdsByDifficultyLevelRange(Integer dLLeft, boolean strictLeft,
-            Integer dLRight, boolean strictRight) {
-        return collectIdsByRange("difficultyLevel", dLLeft, strictLeft, dLRight, strictRight);
+    public List<BigInteger> collectIdsByDifficultyLevelRange(Integer difficultyLevelLeft, boolean strictLeft,
+            Integer difficultyLevelRight, boolean strictRight) {
+        return collectIdsByRange("difficultyLevel", difficultyLevelLeft, strictLeft, difficultyLevelRight, strictRight);
     }
 }
