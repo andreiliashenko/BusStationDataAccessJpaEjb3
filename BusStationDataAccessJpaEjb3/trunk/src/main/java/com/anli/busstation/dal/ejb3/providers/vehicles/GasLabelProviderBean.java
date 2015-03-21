@@ -32,8 +32,8 @@ public class GasLabelProviderBean extends AbstractBSProviderBean<GasLabel, GasLa
     }
 
     @Override
-    public List<GasLabel> findByNameRegexp(String regexpName) {
-        return findByRegexp("name", regexpName);
+    public List<GasLabel> findByNameRegexp(String nameRegexp) {
+        return findByRegexp("name", nameRegexp);
     }
 
     @Override
@@ -48,12 +48,13 @@ public class GasLabelProviderBean extends AbstractBSProviderBean<GasLabel, GasLa
     }
 
     @Override
-    public List<BigInteger> collectIdsByNameRegexp(String regexpName) {
-        return collectIdsByRegexp("name", regexpName);
+    public List<BigInteger> collectIdsByNameRegexp(String nameRegexp) {
+        return collectIdsByRegexp("name", nameRegexp);
     }
 
     @Override
-    public List<BigInteger> collectIdsByPriceRange(BigDecimal priceLeft, boolean leftStrict, BigDecimal priceRight, boolean rightStrict) {
+    public List<BigInteger> collectIdsByPriceRange(BigDecimal priceLeft, boolean leftStrict,
+            BigDecimal priceRight, boolean rightStrict) {
         return collectIdsByRange("price", priceLeft, leftStrict, priceRight, rightStrict);
     }
 }

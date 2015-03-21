@@ -39,31 +39,31 @@ public class ModelProviderBean extends AbstractBSProviderBean<Model, ModelImpl>
     }
 
     @Override
-    public List<Model> findBySeatsNumberRange(Integer seatsLeft, boolean strictLeft,
-            Integer seatsRight, boolean strictRight) {
-        return findByRange("seatsNumber", seatsLeft, strictLeft, seatsRight, strictRight);
+    public List<Model> findBySeatsNumberRange(Integer seatsNumberLeft, boolean strictLeft,
+            Integer seatsNumberRight, boolean strictRight) {
+        return findByRange("seatsNumber", seatsNumberLeft, strictLeft, seatsNumberRight, strictRight);
     }
 
     @Override
-    public List<Model> findByTankVolumeRange(Integer tvLeft, boolean strictLeft,
-            Integer tvRight, boolean strictRight) {
-        return findByRange("tankVolume", tvLeft, strictLeft, tvRight, strictRight);
+    public List<Model> findByTankVolumeRange(Integer tankVolumeLeft, boolean strictLeft,
+            Integer tankVolumeRight, boolean strictRight) {
+        return findByRange("tankVolume", tankVolumeLeft, strictLeft, tankVolumeRight, strictRight);
     }
 
     @Override
-    public List<Model> findByGasLabel(GasLabel label) {
-        return findByEquals("gasLabel", label);
+    public List<Model> findByGasLabel(GasLabel gasLabel) {
+        return findByEquals("gasLabel", gasLabel);
     }
 
     @Override
-    public List<Model> findByAnyGasLabel(Collection<GasLabel> labelList) {
-        return findByAny("gasLabel", labelList);
+    public List<Model> findByAnyGasLabel(Collection<GasLabel> gasLabels) {
+        return findByAny("gasLabel", gasLabels);
     }
 
     @Override
-    public List<Model> findByGasRateRange(BigDecimal rateLeft, boolean strictLeft,
-            BigDecimal rateRight, boolean strictRight) {
-        return findByRange("gasRate", rateLeft, strictLeft, rateRight, strictRight);
+    public List<Model> findByGasRateRange(BigDecimal gasRateLeft, boolean strictLeft,
+            BigDecimal gasRateRight, boolean strictRight) {
+        return findByRange("gasRate", gasRateLeft, strictLeft, gasRateRight, strictRight);
     }
 
     @Override
@@ -77,30 +77,30 @@ public class ModelProviderBean extends AbstractBSProviderBean<Model, ModelImpl>
     }
 
     @Override
-    public List<BigInteger> collectIdsBySeatsNumberRange(Integer seatsLeft, boolean strictLeft,
-            Integer seatsRight, boolean strictRight) {
-        return collectIdsByRange("seatsNumber", seatsLeft, strictLeft, seatsRight, strictRight);
+    public List<BigInteger> collectIdsBySeatsNumberRange(Integer seatsNumberLeft, boolean strictLeft,
+            Integer seatsNumberRight, boolean strictRight) {
+        return collectIdsByRange("seatsNumber", seatsNumberLeft, strictLeft, seatsNumberRight, strictRight);
     }
 
     @Override
-    public List<BigInteger> collectIdsByGasLabel(GasLabel label) {
-        return collectIdsByEquals("gasLabel", label);
+    public List<BigInteger> collectIdsByGasLabel(GasLabel gasLabel) {
+        return collectIdsByEquals("gasLabel", gasLabel);
     }
 
     @Override
-    public List<BigInteger> collectIdsByAnyGasLabel(Collection<GasLabel> labelList) {
-        return collectIdsByAny("gasLabel", labelList);
+    public List<BigInteger> collectIdsByAnyGasLabel(Collection<GasLabel> gasLabels) {
+        return collectIdsByAny("gasLabel", gasLabels);
     }
 
     @Override
-    public List<BigInteger> collectIdsByGasRateRange(BigDecimal rateLeft, boolean strictLeft,
-            BigDecimal rateRight, boolean strictRight) {
-        return collectIdsByRange("gasRate", rateLeft, strictLeft, rateRight, strictRight);
+    public List<BigInteger> collectIdsByGasRateRange(BigDecimal gasRateLeft, boolean strictLeft,
+            BigDecimal gasRateRight, boolean strictRight) {
+        return collectIdsByRange("gasRate", gasRateLeft, strictLeft, gasRateRight, strictRight);
     }
 
     @Override
-    public List<BigInteger> collectIdsByTankVolumeRange(Integer tvLeft, boolean strictLeft,
-            Integer tvRight, boolean strictRight) {
-        return collectIdsByRange("tankVolume", tvLeft, strictLeft, tvRight, strictRight);
+    public List<BigInteger> collectIdsByTankVolumeRange(Integer tankVolumeLeft, boolean strictLeft,
+            Integer tankVolumeRight, boolean strictRight) {
+        return collectIdsByRange("tankVolume", tankVolumeLeft, strictLeft, tankVolumeRight, strictRight);
     }
 }

@@ -22,9 +22,14 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @TransactionAttribute(TransactionAttributeType.REQUIRED)
-public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEntityImpl> implements BSEntityProvider<I> {
+public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEntityImpl>
+        implements BSEntityProvider<I> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractBSProviderBean.class);
 
     @PersistenceContext(unitName = "busstation")
     protected EntityManager manager;
@@ -50,6 +55,7 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
             getManager().getReference(entityClass, entity.getId()).getId();
             return true;
         } catch (EntityNotFoundException enfException) {
+            LOG.error("Entity could not be found", enfException);
             return false;
         }
     }
@@ -86,46 +92,46 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
         }
     }
 
-    protected void setQueryParameters(Query query, Collection params) {
-        if (params == null) {
+    protected void setQueryParameters(Query query, Collection parameters) {
+        if (parameters == null) {
             return;
         }
         int index = 0;
-        for (Object param : params) {
+        for (Object param : parameters) {
             index++;
             query.setParameter(index, param);
         }
     }
 
-    protected <T> List<T> selectByQuery(String query, Collection params, Class<T> type) {
-        return selectByQuery(query, params, type, false);
+    protected <T> List<T> selectByQuery(String query, Collection parameters, Class<T> type) {
+        return selectByQuery(query, parameters, type, false);
     }
 
-    protected <T> List<T> selectByQuery(String query, Collection params, Class<T> type, boolean named) {
+    protected <T> List<T> selectByQuery(String query, Collection parameters, Class<T> type, boolean named) {
         TypedQuery<T> typedQuery;
         if (named) {
             typedQuery = getManager().createNamedQuery(query, type);
         } else {
             typedQuery = getManager().createQuery(query, type);
         }
-        setQueryParameters(typedQuery, params);
+        setQueryParameters(typedQuery, parameters);
         return typedQuery.getResultList();
     }
 
-    protected List<I> findByQuery(String query, Collection params) {
-        return findByQuery(query, params, false);
+    protected List<I> findByQuery(String query, Collection parameters) {
+        return findByQuery(query, parameters, false);
     }
 
-    protected List<I> findByQuery(String query, Collection params, boolean named) {
-        return (List) selectByQuery(query, params, getEntityClass(), named);
+    protected List<I> findByQuery(String query, Collection parameters, boolean named) {
+        return (List) selectByQuery(query, parameters, getEntityClass(), named);
     }
 
-    protected List<BigInteger> collectIdsByQuery(String query, Collection params) {
-        return collectIdsByQuery(query, params, false);
+    protected List<BigInteger> collectIdsByQuery(String query, Collection parameters) {
+        return collectIdsByQuery(query, parameters, false);
     }
 
-    protected List<BigInteger> collectIdsByQuery(String query, Collection params, boolean named) {
-        return selectByQuery(query, params, BigInteger.class, named);
+    protected List<BigInteger> collectIdsByQuery(String query, Collection parameters, boolean named) {
+        return selectByQuery(query, parameters, BigInteger.class, named);
     }
 
     protected List<I> findByEquals(String field, Object value) {
@@ -189,52 +195,52 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
         return collectIdsByQuery(query, Arrays.asList(regexp));
     }
 
-    protected List<I> findByRange(String field, Object left, boolean leftStrict,
-            Object right, boolean rightStrict) {
-        if (left == null && right == null) {
+    protected List<I> findByRange(String field, Object leftValue, boolean leftStrict,
+            Object rightValue, boolean rightStrict) {
+        if (leftValue == null && rightValue == null) {
             return findAll();
         }
         FieldQueryHolder holder = getQueryHolder().getFieldHolder(field);
         String query;
-        ArrayList params = new ArrayList(2);
-        boolean isLeft = left != null;
-        boolean isRight = right != null;
+        ArrayList parameters = new ArrayList(2);
+        boolean isLeft = leftValue != null;
+        boolean isRight = rightValue != null;
         if (!isLeft || !isRight) {
             query = holder.getSelectByOpenRange(isLeft, isLeft ? leftStrict : rightStrict);
         } else {
             query = holder.getSelectByClosedRange(leftStrict, rightStrict);
         }
         if (isLeft) {
-            params.add(left);
+            parameters.add(leftValue);
         }
         if (isRight) {
-            params.add(right);
+            parameters.add(rightValue);
         }
-        return findByQuery(query, params);
+        return findByQuery(query, parameters);
     }
 
-    protected List<BigInteger> collectIdsByRange(String field, Object left, boolean leftStrict,
-            Object right, boolean rightStrict) {
-        if (left == null && right == null) {
+    protected List<BigInteger> collectIdsByRange(String field, Object leftValue, boolean leftStrict,
+            Object rightValue, boolean rightStrict) {
+        if (leftValue == null && rightValue == null) {
             return collectIdsAll();
         }
         FieldQueryHolder holder = getQueryHolder().getFieldHolder(field);
         String query;
-        ArrayList params = new ArrayList(2);
-        boolean isLeft = left != null;
-        boolean isRight = right != null;
+        ArrayList parameters = new ArrayList(2);
+        boolean isLeft = leftValue != null;
+        boolean isRight = rightValue != null;
         if (!isLeft || !isRight) {
             query = holder.getCollectByOpenRange(isLeft, isLeft ? leftStrict : rightStrict);
         } else {
             query = holder.getCollectByClosedRange(leftStrict, rightStrict);
         }
         if (isLeft) {
-            params.add(left);
+            parameters.add(leftValue);
         }
         if (isRight) {
-            params.add(right);
+            parameters.add(rightValue);
         }
-        return collectIdsByQuery(query, params);
+        return collectIdsByQuery(query, parameters);
     }
 
     @Override
@@ -246,17 +252,17 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
 
     @Override
     public I save(I entity) {
-        E entityImpl = (E) entity;
-        checkEntityConsistency(entityImpl);
-        getManager().merge(entityImpl);
+        E concreteEntity = (E) entity;
+        checkEntityConsistency(concreteEntity);
+        getManager().merge(concreteEntity);
         return entity;
     }
 
     @Override
     public void remove(I entity) {
-        E entityImpl = (E) entity;
-        checkEntityConsistency(entityImpl);
-        E toRemove = getManager().find(getEntityClass(), entityImpl.getId());
+        E concreteEntity = (E) entity;
+        checkEntityConsistency(concreteEntity);
+        E toRemove = getManager().find(getEntityClass(), concreteEntity.getId());
         getManager().remove(toRemove);
     }
 
