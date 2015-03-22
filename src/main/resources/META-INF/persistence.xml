@@ -3,5 +3,6 @@
   <persistence-unit name="busstation" transaction-type="JTA">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
     <jta-data-source>jdbc/BSA</jta-data-source>
+    <validation-mode>NONE</validation-mode>
   </persistence-unit>
 </persistence>
