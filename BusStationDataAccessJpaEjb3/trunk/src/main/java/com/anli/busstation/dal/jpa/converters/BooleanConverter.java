@@ -1,7 +1,9 @@
 package com.anli.busstation.dal.jpa.converters;
 
 import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 
+@Converter
 public class BooleanConverter implements AttributeConverter<Boolean, Integer> {
 
     @Override

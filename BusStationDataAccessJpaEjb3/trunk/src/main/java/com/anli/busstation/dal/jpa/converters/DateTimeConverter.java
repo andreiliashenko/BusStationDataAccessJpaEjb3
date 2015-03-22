@@ -2,8 +2,10 @@ package com.anli.busstation.dal.jpa.converters;
 
 import java.sql.Timestamp;
 import javax.persistence.AttributeConverter;
+import javax.persistence.Converter;
 import org.joda.time.DateTime;
 
+@Converter
 public class DateTimeConverter implements AttributeConverter<DateTime, Timestamp> {
 
     @Override

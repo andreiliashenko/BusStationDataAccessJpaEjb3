@@ -37,9 +37,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>${project.groupId}</groupId>
+            <groupId>com.anli.busstation</groupId>
             <artifactId>BusStationDataAccess</artifactId>
-            <version>${project.version}</version>
+            <version>0.5</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
@@ -55,6 +55,11 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.10</version>
+        </dependency>
+        <dependency>
+            <groupId>com.anli</groupId>
+            <artifactId>Configuration</artifactId>
+            <version>0.5</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
