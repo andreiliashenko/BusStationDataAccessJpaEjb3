@@ -8,10 +8,11 @@ import java.math.BigInteger;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
+
+import static javax.ejb.TransactionAttributeType.REQUIRED;
 
 @Stateless
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
+@TransactionAttribute(REQUIRED)
 public class TechnicalStateProviderBean
         extends AbstractBSProviderBean<TechnicalState, TechnicalStateImpl>
         implements TechnicalStateProvider {
@@ -39,7 +40,8 @@ public class TechnicalStateProviderBean
     @Override
     public List<TechnicalState> findByDifficultyLevelRange(Integer difficultyLevelLeft, boolean strictLeft,
             Integer difficultyLevelRight, boolean strictRight) {
-        return findByRange("difficultyLevel", difficultyLevelLeft, strictLeft, difficultyLevelRight, strictRight);
+        return findByRange("difficultyLevel", difficultyLevelLeft, strictLeft, difficultyLevelRight,
+                strictRight);
     }
 
     @Override
@@ -55,6 +57,7 @@ public class TechnicalStateProviderBean
     @Override
     public List<BigInteger> collectIdsByDifficultyLevelRange(Integer difficultyLevelLeft, boolean strictLeft,
             Integer difficultyLevelRight, boolean strictRight) {
-        return collectIdsByRange("difficultyLevel", difficultyLevelLeft, strictLeft, difficultyLevelRight, strictRight);
+        return collectIdsByRange("difficultyLevel", difficultyLevelLeft, strictLeft, difficultyLevelRight,
+                strictRight);
     }
 }
