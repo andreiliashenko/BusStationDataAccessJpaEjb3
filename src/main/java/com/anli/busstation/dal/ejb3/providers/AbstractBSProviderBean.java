@@ -282,6 +282,9 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
     @Override
     public I create() {
         E entity = getEntityInstance();
+        if (entity == null) {
+            return null;
+        }
         getManager().persist(entity);
         return (I) entity;
     }

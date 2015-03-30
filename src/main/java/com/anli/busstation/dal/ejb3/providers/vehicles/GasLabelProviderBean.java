@@ -38,9 +38,9 @@ public class GasLabelProviderBean extends AbstractBSProviderBean<GasLabel, GasLa
     }
 
     @Override
-    public List<GasLabel> findByPriceRange(BigDecimal priceLeft, boolean leftStrict,
-            BigDecimal priceRight, boolean rightStrict) {
-        return findByRange("price", priceLeft, leftStrict, priceRight, rightStrict);
+    public List<GasLabel> findByPriceRange(BigDecimal priceLeft, boolean strictLeft,
+            BigDecimal priceRight, boolean strictRight) {
+        return findByRange("price", priceLeft, strictLeft, priceRight, strictRight);
     }
 
     @Override
@@ -54,8 +54,8 @@ public class GasLabelProviderBean extends AbstractBSProviderBean<GasLabel, GasLa
     }
 
     @Override
-    public List<BigInteger> collectIdsByPriceRange(BigDecimal priceLeft, boolean leftStrict,
-            BigDecimal priceRight, boolean rightStrict) {
-        return collectIdsByRange("price", priceLeft, leftStrict, priceRight, rightStrict);
+    public List<BigInteger> collectIdsByPriceRange(BigDecimal priceLeft, boolean strictLeft,
+            BigDecimal priceRight, boolean strictRight) {
+        return collectIdsByRange("price", priceLeft, strictLeft, priceRight, strictRight);
     }
 }

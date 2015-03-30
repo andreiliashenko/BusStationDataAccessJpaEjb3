@@ -14,11 +14,6 @@ public class EmployeeProviderBean extends AbstractEmployeeProviderBean<Employee,
         implements EmployeeProvider {
 
     @Override
-    public Employee create() {
-        return null;
-    }
-
-    @Override
     protected EmployeeImpl getEntityInstance() {
         return null;
     }

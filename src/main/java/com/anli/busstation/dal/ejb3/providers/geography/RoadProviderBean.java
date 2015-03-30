@@ -10,10 +10,12 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 
 import static javax.ejb.TransactionAttributeType.REQUIRED;
 
+@Stateless
 @TransactionAttribute(REQUIRED)
 public class RoadProviderBean extends AbstractBSProviderBean<Road, RoadImpl>
         implements RoadProvider {
