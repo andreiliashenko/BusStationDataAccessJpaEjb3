@@ -8,7 +8,13 @@ import com.anli.busstation.dal.jpa.entities.geography.RegionImpl;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
+import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
 
+import static javax.ejb.TransactionAttributeType.REQUIRED;
+
+@Stateless
+@TransactionAttribute(REQUIRED)
 public class RegionProviderBean extends AbstractBSProviderBean<Region, RegionImpl>
         implements RegionProvider {
 
