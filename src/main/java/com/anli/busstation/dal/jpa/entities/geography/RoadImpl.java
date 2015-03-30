@@ -9,12 +9,27 @@ import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity(name = "Road")
 @Table(name = "roads")
 @AttributeOverride(name = "id", column = @Column(name = "road_id"))
+@NamedQueries(value = {
+    @NamedQuery(name = "Road.findByStation",
+            query = "select r from Road r where r.aStation = ?1 or r.zStation = ?1"),
+    @NamedQuery(name = "Road.findByNullStation",
+            query = "select r from Road r where r.aStation is null or r.zStation is null"),
+    @NamedQuery(name = "Road.findByAnyStation", query = "select r from Road r where "
+            + "r.aStation in ?1 or r.zStation in ?1"),
+    @NamedQuery(name = "Road.collectIdsByStation",
+            query = "select r.id from Road r where r.aStation = ?1 or r.zStation = ?1"),
+    @NamedQuery(name = "Road.collectIdsByNullStation",
+            query = "select r.id from Road r where r.aStation is null or r.zStation is null"),
+    @NamedQuery(name = "Road.collectIdsByAnyStation",
+            query = "select r.id from Road r where r.aStation in ?1 or r.zStation in ?1")})
 public class RoadImpl extends BSEntityImpl implements Road {
 
     @OneToOne

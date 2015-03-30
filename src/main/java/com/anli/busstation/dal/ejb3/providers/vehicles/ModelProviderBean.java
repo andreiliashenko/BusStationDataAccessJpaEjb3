@@ -11,10 +11,11 @@ import java.util.Collection;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
+
+import static javax.ejb.TransactionAttributeType.REQUIRED;
 
 @Stateless
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
+@TransactionAttribute(REQUIRED)
 public class ModelProviderBean extends AbstractBSProviderBean<Model, ModelImpl>
         implements ModelProvider {
 

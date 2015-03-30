@@ -3,10 +3,13 @@ package com.anli.busstation.dal.ejb3.providers;
 import com.anli.busstation.dal.ejb3.exceptions.ManageableConsistencyException;
 import com.anli.busstation.dal.interfaces.entities.BSEntity;
 import com.anli.busstation.dal.interfaces.providers.BSEntityProvider;
+import com.anli.busstation.dal.jpa.reflective.EntityRelationHolder;
+import com.anli.busstation.dal.jpa.reflective.GlobalRelationHolder;
 import com.anli.busstation.dal.jpa.entities.BSEntityImpl;
 import com.anli.busstation.dal.jpa.queries.EntityQueryHolder;
 import com.anli.busstation.dal.jpa.queries.FieldQueryHolder;
 import com.anli.busstation.dal.jpa.queries.GlobalQueryHolder;
+import com.anli.busstation.dal.jpa.reflective.FieldDescriptor;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,7 +17,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.inject.Inject;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -25,7 +27,9 @@ import javax.persistence.TypedQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@TransactionAttribute(TransactionAttributeType.REQUIRED)
+import static javax.ejb.TransactionAttributeType.REQUIRED;
+
+@TransactionAttribute(REQUIRED)
 public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEntityImpl>
         implements BSEntityProvider<I> {
 
@@ -36,6 +40,9 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
 
     @Inject
     protected GlobalQueryHolder queryHolder;
+
+    @Inject
+    protected GlobalRelationHolder relationHolder;
 
     protected abstract E getEntityInstance();
 
@@ -50,18 +57,19 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
         return queryHolder.getHolder(entityName);
     }
 
-    protected boolean isEntityConsistent(BSEntity entity, Class<? extends BSEntity> entityClass) {
+    protected BSEntity getEntityReference(BSEntity entity, Class<? extends BSEntity> entityClass) {
         try {
-            getManager().getReference(entityClass, entity.getId()).getId();
-            return true;
+            BSEntity reference = getManager().getReference(entityClass, entity.getId());
+            reference.getId();
+            return reference;
         } catch (EntityNotFoundException enfException) {
             LOG.error("Entity could not be found", enfException);
-            return false;
+            return null;
         }
     }
 
-    protected boolean isMainEntityConsistent(E entity) {
-        return isEntityConsistent(entity, getEntityClass());
+    protected E getMainEntityReference(E entity) {
+        return (E) getEntityReference(entity, getEntityClass());
     }
 
     protected Collection<BSEntity> getInconsistentCollectionElements(Collection<BSEntity> collection,
@@ -71,7 +79,7 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
             return inconsistentEntities;
         }
         for (BSEntity entity : collection) {
-            if (!isEntityConsistent(entity, entityClass)) {
+            if (getEntityReference(entity, entityClass) == null) {
                 inconsistentEntities.add(entity);
             }
         }
@@ -79,17 +87,45 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
     }
 
     protected Collection<BSEntity> getInconsistentReferences(E entity) {
-        return new LinkedList<>();
+        EntityRelationHolder relations = relationHolder.getHolder(getEntityClass());
+        Collection<BSEntity> inconsistent = new LinkedList<>();
+        for (FieldDescriptor field : relations.getFields()) {
+            addFieldInconsistentEntities(entity, field, inconsistent);
+        }
+        return inconsistent;
     }
 
-    protected void checkEntityConsistency(E entity) {
-        if (!isMainEntityConsistent(entity)) {
+    protected void addFieldInconsistentEntities(E entity, FieldDescriptor field,
+            Collection<BSEntity> inconsistent) {
+        Object fieldValue;
+        try {
+            fieldValue = field.getField().get(entity);
+        } catch (IllegalAccessException ex) {
+            LOG.error("Could not access reference field", ex);
+            throw new RuntimeException(ex);
+        }
+        if (field.isCollection()) {
+            inconsistent.addAll(getInconsistentCollectionElements((Collection) fieldValue,
+                    field.getElementClass()));
+        } else if (fieldValue != null && getEntityReference((BSEntity) fieldValue,
+                field.getElementClass()) == null) {
+            inconsistent.add((BSEntity) fieldValue);
+        }
+    }
+
+    protected E checkEntityConsistency(E entity, boolean checkReferences) {
+        E consistent = getMainEntityReference(entity);
+        if (consistent == null) {
             throw new ManageableConsistencyException(Arrays.asList((BSEntity) entity), null);
+        }
+        if (!checkReferences) {
+            return consistent;
         }
         Collection<BSEntity> inconsistent = getInconsistentReferences(entity);
         if (!inconsistent.isEmpty()) {
             throw new ManageableConsistencyException(inconsistent, null);
         }
+        return consistent;
     }
 
     protected void setQueryParameters(Query query, Collection parameters) {
@@ -253,7 +289,7 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
     @Override
     public I save(I entity) {
         E concreteEntity = (E) entity;
-        checkEntityConsistency(concreteEntity);
+        checkEntityConsistency(concreteEntity, true);
         getManager().merge(concreteEntity);
         return entity;
     }
@@ -261,7 +297,7 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
     @Override
     public void remove(I entity) {
         E concreteEntity = (E) entity;
-        checkEntityConsistency(concreteEntity);
+        checkEntityConsistency(concreteEntity, false);
         E toRemove = getManager().find(getEntityClass(), concreteEntity.getId());
         getManager().remove(toRemove);
     }
