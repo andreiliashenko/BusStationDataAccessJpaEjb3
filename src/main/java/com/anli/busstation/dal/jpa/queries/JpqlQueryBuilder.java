@@ -18,7 +18,7 @@ public class JpqlQueryBuilder {
 
     protected void appendBinaryOperatorCondition(StringBuilder clause, String entityAlias,
             String fieldName, String operator, int parameterNumber) {
-        clause.append(entityAlias).append(".").append(fieldName)
+        clause.append(entityAlias).append(".").append(fieldName).append(" ")
                 .append(operator).append(" ?").append(parameterNumber);
     }
 
