@@ -194,7 +194,7 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
             return new LinkedList<>();
         }
         String query = getQueryHolder().getFieldHolder(field).getSelectByAny();
-        return findByQuery(query, values);
+        return findByQuery(query, Arrays.asList(values));
     }
 
     protected List<BigInteger> collectIdsByAny(String field, Collection values) {
@@ -202,7 +202,7 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
             return new LinkedList<>();
         }
         String query = getQueryHolder().getFieldHolder(field).getCollectByAny();
-        return collectIdsByQuery(query, values);
+        return collectIdsByQuery(query, Arrays.asList(values));
     }
 
     protected List<I> findByContains(String field, Object value) {
