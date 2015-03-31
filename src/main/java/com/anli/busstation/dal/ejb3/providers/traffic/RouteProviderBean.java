@@ -35,14 +35,14 @@ public class RouteProviderBean extends AbstractBSProviderBean<Route, RouteImpl>
     @Override
     public Route pullRoutePoints(Route route) {
         RouteImpl originalRoute = (RouteImpl) route;
-        originalRoute.setRoutePoints((List) checkEntityConsistency(originalRoute, false).getRoutePoints());
+        originalRoute.setRoutePoints(checkEntityConsistency(originalRoute, false).getLazyRoutePoints());
         return originalRoute;
     }
 
     @Override
     public Route pullRides(Route route) {
         RouteImpl originalRoute = (RouteImpl) route;
-        originalRoute.setRides((List) checkEntityConsistency(originalRoute, false).getRides());
+        originalRoute.setRides(checkEntityConsistency(originalRoute, false).getLazyRides());
         return originalRoute;
     }
 

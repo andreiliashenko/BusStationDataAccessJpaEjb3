@@ -11,6 +11,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.TableGenerator;
+import org.eclipse.persistence.indirection.IndirectList;
 
 @MappedSuperclass
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -85,6 +86,8 @@ public abstract class BSEntityImpl implements BSEntity {
 
     @Deprecated
     protected boolean nullableListDeepEquals(List<BSEntityImpl> first, List<BSEntityImpl> second) {
+        first = getList(first);
+        second = getList(second);
         if (first == null && second == null) {
             return true;
         }
@@ -105,5 +108,23 @@ public abstract class BSEntityImpl implements BSEntity {
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + " id = " + id;
+    }
+
+    protected boolean isLazyNonInstantiated(List list) {
+        if (list != null && list instanceof IndirectList) {
+            return !((IndirectList) list).isInstantiated();
+        }
+        return false;
+    }
+
+    protected List getList(List list) {
+        return isLazyNonInstantiated(list) ? null : list;
+    }
+
+    protected List initList(List list) {
+        if (isLazyNonInstantiated(list)) {
+            list.size();
+        }
+        return list;
     }
 }
