@@ -6,6 +6,7 @@ import com.anli.busstation.dal.interfaces.entities.BSEntity;
 import com.anli.busstation.dal.interfaces.entities.staff.Mechanic;
 import com.anli.busstation.dal.interfaces.entities.maintenance.TechnicalAssignment;
 import com.anli.busstation.dal.jpa.converters.DateTimeConverter;
+import com.anli.busstation.dal.jpa.extractors.TechnicalAssignmentExtractor;
 import java.math.BigDecimal;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -18,11 +19,13 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.eclipse.persistence.annotations.ClassExtractor;
 import org.joda.time.DateTime;
 
 @Entity(name = "TechnicalAssignment")
 @Table(name = "technical_assignments")
 @Inheritance(strategy = InheritanceType.JOINED)
+@ClassExtractor(TechnicalAssignmentExtractor.class)
 @AttributeOverride(name = "id", column = @Column(name = "assignment_id"))
 public abstract class TechnicalAssignmentImpl extends BSEntityImpl implements TechnicalAssignment {
 

@@ -4,6 +4,7 @@ import com.anli.busstation.dal.jpa.entities.vehicles.BusImpl;
 import com.anli.busstation.dal.interfaces.entities.BSEntity;
 import com.anli.busstation.dal.interfaces.entities.vehicles.Bus;
 import com.anli.busstation.dal.interfaces.entities.maintenance.BusService;
+import com.anli.busstation.dal.jpa.extractors.BusServiceExtractor;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -11,10 +12,12 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
+import org.eclipse.persistence.annotations.ClassExtractor;
 
 @Entity(name = "BusService")
 @Table(name = "bus_services")
 @Inheritance(strategy = InheritanceType.JOINED)
+@ClassExtractor(BusServiceExtractor.class)
 @PrimaryKeyJoinColumn(name = "assignment_id", referencedColumnName = "assignment_id")
 public abstract class BusServiceImpl extends TechnicalAssignmentImpl implements BusService {
 
