@@ -8,12 +8,14 @@ import com.anli.busstation.dal.jpa.entities.traffic.RoutePointImpl;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
+import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 
 import static javax.ejb.TransactionAttributeType.REQUIRED;
 
 @Stateless
+@Remote(RoutePointProvider.class)
 @TransactionAttribute(REQUIRED)
 public class RoutePointProviderBean extends AbstractBSProviderBean<RoutePoint, RoutePointImpl>
         implements RoutePointProvider {

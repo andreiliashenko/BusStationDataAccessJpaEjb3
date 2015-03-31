@@ -6,12 +6,14 @@ import com.anli.busstation.dal.interfaces.providers.staff.MechanicSkillProvider;
 import com.anli.busstation.dal.jpa.entities.staff.MechanicSkillImpl;
 import java.math.BigInteger;
 import java.util.List;
+import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 
 import static javax.ejb.TransactionAttributeType.REQUIRED;
 
 @Stateless
+@Remote(MechanicSkillProvider.class)
 @TransactionAttribute(REQUIRED)
 public class MechanicSkillProviderBean extends AbstractBSProviderBean<MechanicSkill, MechanicSkillImpl>
         implements MechanicSkillProvider {

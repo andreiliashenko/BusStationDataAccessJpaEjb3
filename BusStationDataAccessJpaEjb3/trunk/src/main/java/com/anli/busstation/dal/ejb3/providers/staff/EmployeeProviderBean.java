@@ -3,12 +3,14 @@ package com.anli.busstation.dal.ejb3.providers.staff;
 import com.anli.busstation.dal.interfaces.entities.staff.Employee;
 import com.anli.busstation.dal.interfaces.providers.staff.EmployeeProvider;
 import com.anli.busstation.dal.jpa.entities.staff.EmployeeImpl;
+import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 
 import static javax.ejb.TransactionAttributeType.REQUIRED;
 
 @Stateless
+@Remote(EmployeeProvider.class)
 @TransactionAttribute(REQUIRED)
 public class EmployeeProviderBean extends AbstractEmployeeProviderBean<Employee, EmployeeImpl>
         implements EmployeeProvider {

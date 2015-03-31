@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
+import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import org.joda.time.DateTime;
@@ -17,6 +18,7 @@ import org.joda.time.DateTime;
 import static javax.ejb.TransactionAttributeType.REQUIRED;
 
 @Stateless
+@Remote(TicketProvider.class)
 @TransactionAttribute(REQUIRED)
 public class TicketProviderBean extends AbstractBSProviderBean<Ticket, TicketImpl>
         implements TicketProvider {
