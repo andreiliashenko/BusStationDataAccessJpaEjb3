@@ -12,7 +12,7 @@ import javax.persistence.Table;
 @PrimaryKeyJoinColumn(name = "assignment_id", referencedColumnName = "assignment_id")
 public class BusRefuellingImpl extends BusServiceImpl implements BusRefuelling {
 
-    @Column(name = "volume")
+    @Column(name = "gas_volume")
     protected Integer volume;
 
     @Override

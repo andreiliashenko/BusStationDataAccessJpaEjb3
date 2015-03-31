@@ -21,7 +21,7 @@ public class RegionImpl extends BSEntityImpl implements Region {
 
     @Column(name = "name")
     protected String name;
-    @Column(name = "code")
+    @Column(name = "num_code")
     protected Integer code;
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "region", referencedColumnName = "region_id")
