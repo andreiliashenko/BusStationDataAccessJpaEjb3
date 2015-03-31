@@ -9,7 +9,7 @@ public class JpqlQueryBuilder {
 
     protected void appendSelectAndFrom(StringBuilder clause, String entityName,
             String entityAlias, boolean full) {
-        clause.append("select ").append(entityAlias);
+        clause.append("select distinct ").append(entityAlias);
         if (!full) {
             clause.append(".").append(ID);
         }
@@ -31,7 +31,7 @@ public class JpqlQueryBuilder {
     protected void appendMemberOfCondition(StringBuilder clause, String entityAlias,
             String fieldName, int parameterNumber) {
         clause.append("?").append(parameterNumber).append(" member of ")
-                .append(entityAlias).append(fieldName);
+                .append(entityAlias).append(".").append(fieldName);
     }
 
     protected String buildSelectBySingleBinaryOperator(String entityName,
