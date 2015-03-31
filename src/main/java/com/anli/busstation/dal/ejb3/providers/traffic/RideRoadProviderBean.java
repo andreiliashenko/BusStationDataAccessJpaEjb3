@@ -9,12 +9,14 @@ import com.anli.busstation.dal.jpa.entities.traffic.RideRoadImpl;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
+import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 
 import static javax.ejb.TransactionAttributeType.REQUIRED;
 
 @Stateless
+@Remote(RideRoadProvider.class)
 @TransactionAttribute(REQUIRED)
 public class RideRoadProviderBean extends AbstractBSProviderBean<RideRoad, RideRoadImpl>
         implements RideRoadProvider {

@@ -5,12 +5,14 @@ import com.anli.busstation.dal.interfaces.providers.maintenance.BusRefuellingPro
 import com.anli.busstation.dal.jpa.entities.maintenance.BusRefuellingImpl;
 import java.math.BigInteger;
 import java.util.List;
+import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 
 import static javax.ejb.TransactionAttributeType.REQUIRED;
 
 @Stateless
+@Remote(BusRefuellingProvider.class)
 @TransactionAttribute(REQUIRED)
 public class BusRefuellingProviderBean
         extends AbstractBusServiceProviderBean<BusRefuelling, BusRefuellingImpl>

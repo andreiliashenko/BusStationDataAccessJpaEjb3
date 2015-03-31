@@ -8,6 +8,7 @@ import com.anli.busstation.dal.jpa.entities.traffic.RidePointImpl;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
+import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import org.joda.time.DateTime;
@@ -15,6 +16,7 @@ import org.joda.time.DateTime;
 import static javax.ejb.TransactionAttributeType.REQUIRED;
 
 @Stateless
+@Remote(RidePointProvider.class)
 @TransactionAttribute(REQUIRED)
 public class RidePointProviderBean extends AbstractBSProviderBean<RidePoint, RidePointImpl>
         implements RidePointProvider {

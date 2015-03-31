@@ -10,12 +10,14 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.List;
+import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 
 import static javax.ejb.TransactionAttributeType.REQUIRED;
 
 @Stateless
+@Remote(RouteProvider.class)
 @TransactionAttribute(REQUIRED)
 public class RouteProviderBean extends AbstractBSProviderBean<Route, RouteImpl>
         implements RouteProvider {

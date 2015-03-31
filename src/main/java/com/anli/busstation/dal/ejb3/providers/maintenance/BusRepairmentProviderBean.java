@@ -6,12 +6,14 @@ import com.anli.busstation.dal.jpa.entities.maintenance.BusRepairmentImpl;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
+import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 
 import static javax.ejb.TransactionAttributeType.REQUIRED;
 
 @Stateless
+@Remote(BusRepairmentProvider.class)
 @TransactionAttribute(REQUIRED)
 public class BusRepairmentProviderBean
         extends AbstractBusServiceProviderBean<BusRepairment, BusRepairmentImpl>

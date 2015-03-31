@@ -5,12 +5,14 @@ import com.anli.busstation.dal.interfaces.providers.maintenance.StationServicePr
 import com.anli.busstation.dal.jpa.entities.maintenance.StationServiceImpl;
 import java.math.BigInteger;
 import java.util.List;
+import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 
 import static javax.ejb.TransactionAttributeType.REQUIRED;
 
 @Stateless
+@Remote(StationServiceProvider.class)
 @TransactionAttribute(REQUIRED)
 public class StationServiceProviderBean
         extends AbstractTechnicalAssignmentProviderBean<StationService, StationServiceImpl>

@@ -7,12 +7,14 @@ import com.anli.busstation.dal.jpa.entities.vehicles.GasLabelImpl;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
+import javax.ejb.Remote;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 
 import static javax.ejb.TransactionAttributeType.REQUIRED;
 
 @Stateless
+@Remote(GasLabelProvider.class)
 @TransactionAttribute(REQUIRED)
 public class GasLabelProviderBean extends AbstractBSProviderBean<GasLabel, GasLabelImpl>
         implements GasLabelProvider {
