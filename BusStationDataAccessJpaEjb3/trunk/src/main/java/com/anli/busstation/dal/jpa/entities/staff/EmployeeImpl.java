@@ -4,6 +4,7 @@ import com.anli.busstation.dal.jpa.entities.BSEntityImpl;
 import com.anli.busstation.dal.interfaces.entities.BSEntity;
 import com.anli.busstation.dal.interfaces.entities.staff.Employee;
 import com.anli.busstation.dal.jpa.converters.DateTimeConverter;
+import com.anli.busstation.dal.jpa.extractors.EmployeeExtractor;
 import java.math.BigDecimal;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
@@ -14,10 +15,12 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import org.eclipse.persistence.annotations.ClassExtractor;
 import org.joda.time.DateTime;
 
 @Entity(name = "Employee")
 @Inheritance(strategy = InheritanceType.JOINED)
+@ClassExtractor(EmployeeExtractor.class)
 @Table(name = "employees")
 @AttributeOverride(name = "id", column = @Column(name = "employee_id"))
 public abstract class EmployeeImpl extends BSEntityImpl implements Employee {
