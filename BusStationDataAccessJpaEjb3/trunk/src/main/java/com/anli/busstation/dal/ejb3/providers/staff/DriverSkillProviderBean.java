@@ -41,7 +41,7 @@ public class DriverSkillProviderBean extends AbstractBSProviderBean<DriverSkill,
     @Override
     public List<DriverSkill> findByMaxRideLengthRange(Integer maxRideLengthLeft, boolean strictLeft,
             Integer maxRideLengthRight, boolean strictRight) {
-        return findByRange("maxRideLength", maxRideLengthLeft, strictRight, maxRideLengthRight, strictRight);
+        return findByRange("maxRideLength", maxRideLengthLeft, strictLeft, maxRideLengthRight, strictRight);
     }
 
     @Override
