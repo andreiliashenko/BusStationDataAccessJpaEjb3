@@ -52,29 +52,41 @@ public class RideImpl extends BSEntityImpl implements Ride {
 
     @Override
     public List<RidePoint> getRidePoints() {
-        return (List) ridePoints;
+        return getList(ridePoints);
+    }
+
+    public List<RidePointImpl> getLazyRidePoints() {
+        return ridePoints;
     }
 
     public void setRidePoints(List<RidePointImpl> ridePoints) {
-        this.ridePoints = ridePoints;
+        this.ridePoints = initList(ridePoints);
     }
 
     @Override
     public List<RideRoad> getRideRoads() {
-        return (List) rideRoads;
+        return getList(rideRoads);
+    }
+
+    public List<RideRoadImpl> getLazyRideRoads() {
+        return rideRoads;
     }
 
     public void setRideRoads(List<RideRoadImpl> rideRoads) {
-        this.rideRoads = rideRoads;
+        this.rideRoads = initList(rideRoads);
     }
 
     @Override
     public List<Ticket> getTickets() {
-        return (List) tickets;
+        return getList(tickets);
+    }
+
+    public List<TicketImpl> getLazyTickets() {
+        return tickets;
     }
 
     public void setTickets(List<TicketImpl> tickets) {
-        this.tickets = tickets;
+        this.tickets = initList(tickets);
     }
 
     @Override

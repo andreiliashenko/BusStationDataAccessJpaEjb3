@@ -35,16 +35,16 @@ public class StationProviderBean extends AbstractBSProviderBean<Station, Station
     @Override
     public Station pullEmployees(Station station) {
         StationImpl originalStation = (StationImpl) station;
-        originalStation.setEmployees((List) checkEntityConsistency(originalStation, false)
-                .getEmployees());
+        originalStation.setEmployees(checkEntityConsistency(originalStation, false)
+                .getLazyEmployees());
         return originalStation;
     }
 
     @Override
     public Station pullBuses(Station station) {
         StationImpl originalStation = (StationImpl) station;
-        originalStation.setBuses((List) checkEntityConsistency(originalStation, false)
-                .getBuses());
+        originalStation.setBuses(checkEntityConsistency(originalStation, false)
+                .getLazyBuses());
         return originalStation;
     }
 

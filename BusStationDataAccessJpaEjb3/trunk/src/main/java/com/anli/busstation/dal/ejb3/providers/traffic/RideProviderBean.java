@@ -35,21 +35,21 @@ public class RideProviderBean extends AbstractBSProviderBean<Ride, RideImpl> imp
     @Override
     public Ride pullRidePoints(Ride ride) {
         RideImpl originalRide = (RideImpl) ride;
-        originalRide.setRidePoints((List) checkEntityConsistency(originalRide, false).getRidePoints());
+        originalRide.setRidePoints(checkEntityConsistency(originalRide, false).getLazyRidePoints());
         return originalRide;
     }
 
     @Override
     public Ride pullRideRoads(Ride ride) {
         RideImpl originalRide = (RideImpl) ride;
-        originalRide.setRideRoads((List) checkEntityConsistency(originalRide, false).getRideRoads());
+        originalRide.setRideRoads(checkEntityConsistency(originalRide, false).getLazyRideRoads());
         return originalRide;
     }
 
     @Override
     public Ride pullTickets(Ride ride) {
         RideImpl originalRide = (RideImpl) ride;
-        originalRide.setTickets((List) checkEntityConsistency(originalRide, false).getTickets());
+        originalRide.setTickets(checkEntityConsistency(originalRide, false).getLazyTickets());
         return originalRide;
     }
 

@@ -70,20 +70,28 @@ public class StationImpl extends BSEntityImpl implements Station {
 
     @Override
     public List<Employee> getEmployees() {
-        return (List) employees;
+        return getList(employees);
+    }
+
+    public List<EmployeeImpl> getLazyEmployees() {
+        return employees;
     }
 
     public void setEmployees(List<EmployeeImpl> employees) {
-        this.employees = employees;
+        this.employees = initList(employees);
     }
 
     @Override
     public List<Bus> getBuses() {
-        return (List) buses;
+        return getList(buses);
+    }
+
+    public List<BusImpl> getLazyBuses() {
+        return buses;
     }
 
     public void setBuses(List<BusImpl> buses) {
-        this.buses = buses;
+        this.buses = initList(buses);
     }
 
     @Override

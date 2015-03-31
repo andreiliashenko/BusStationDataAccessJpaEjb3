@@ -50,11 +50,15 @@ public class RegionImpl extends BSEntityImpl implements Region {
 
     @Override
     public List<Station> getStations() {
-        return (List) stations;
+        return getList(stations);
+    }
+
+    public List<StationImpl> getLazyStations() {
+        return stations;
     }
 
     public void setStations(List<StationImpl> stations) {
-        this.stations = stations;
+        this.stations = initList(stations);
     }
 
     @Override

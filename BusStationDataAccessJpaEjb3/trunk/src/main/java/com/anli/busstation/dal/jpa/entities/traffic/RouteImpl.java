@@ -56,20 +56,28 @@ public class RouteImpl extends BSEntityImpl implements Route {
 
     @Override
     public List<RoutePoint> getRoutePoints() {
-        return (List) routePoints;
+        return getList(routePoints);
+    }
+
+    public List<RoutePointImpl> getLazyRoutePoints() {
+        return routePoints;
     }
 
     public void setRoutePoints(List<RoutePointImpl> routePoint) {
-        this.routePoints = routePoint;
+        this.routePoints = initList(routePoint);
     }
 
     @Override
     public List<Ride> getRides() {
-        return (List) rides;
+        return getList(rides);
+    }
+
+    public List<RideImpl> getLazyRides() {
+        return rides;
     }
 
     public void setRides(List<RideImpl> rides) {
-        this.rides = rides;
+        this.rides = initList(rides);
     }
 
     @Override
