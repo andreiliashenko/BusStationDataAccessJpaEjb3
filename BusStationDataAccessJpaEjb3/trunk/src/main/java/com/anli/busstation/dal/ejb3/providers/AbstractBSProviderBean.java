@@ -307,6 +307,9 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
 
     @Override
     public I findById(BigInteger id) {
+        if (id == null) {
+            return null;
+        }
         return (I) getManager().find(getEntityClass(), id);
     }
 
