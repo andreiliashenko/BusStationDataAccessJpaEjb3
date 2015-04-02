@@ -43,7 +43,7 @@ public abstract class AbstractTechnicalAssignmentProviderBean<I extends Technica
     @Override
     public List<I> findByServiceCostRange(BigDecimal serviceCostLeft, boolean strictLeft,
             BigDecimal serviceCostRight, boolean strictRight) {
-        return findByRange("serviceCost", serviceCostLeft, strictRight, serviceCostRight, strictRight);
+        return findByRange("serviceCost", serviceCostLeft, strictLeft, serviceCostRight, strictRight);
     }
 
     @Override
