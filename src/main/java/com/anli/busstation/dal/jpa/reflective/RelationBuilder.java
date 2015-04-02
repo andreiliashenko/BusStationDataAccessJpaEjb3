@@ -20,7 +20,7 @@ public class RelationBuilder {
             for (Field field : entityClass.getDeclaredFields()) {
                 FieldDescriptor descriptor = null;
                 if (field.isAnnotationPresent(OneToOne.class)) {
-                    descriptor = getDescriptor(field, false, field.getDeclaringClass());
+                    descriptor = getDescriptor(field, false, field.getType());
                 } else if (field.isAnnotationPresent(OneToMany.class)) {
                     ParameterizedType genericType = (ParameterizedType) field.getGenericType();
                     Class elementClass = (Class) genericType.getActualTypeArguments()[0];
