@@ -24,6 +24,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
+import org.eclipse.persistence.indirection.IndirectCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,8 +108,8 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
         if (field.isCollection()) {
             inconsistent.addAll(getInconsistentCollectionElements((Collection) fieldValue,
                     field.getElementClass()));
-        } else if (fieldValue != null && getEntityReference((BSEntity) fieldValue,
-                field.getElementClass()) == null) {
+        } else if (fieldValue != null && !(fieldValue instanceof IndirectCollection)
+                && getEntityReference((BSEntity) fieldValue, field.getElementClass()) == null) {
             inconsistent.add((BSEntity) fieldValue);
         }
     }
