@@ -12,11 +12,12 @@ import java.util.List;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+
+import static javax.persistence.FetchType.LAZY;
 
 @Entity(name = "Station")
 @Table(name = "stations")
@@ -29,11 +30,11 @@ public class StationImpl extends BSEntityImpl implements Station {
     protected BigDecimal latitude;
     @Column(name = "longitude")
     protected BigDecimal longitude;
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = LAZY)
     @JoinColumn(name = "station", referencedColumnName = "station_id")
     @OrderColumn(name = "station_order")
     protected List<EmployeeImpl> employees;
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = LAZY)
     @JoinColumn(name = "station", referencedColumnName = "station_id")
     @OrderColumn(name = "station_order")
     protected List<BusImpl> buses;
@@ -70,28 +71,20 @@ public class StationImpl extends BSEntityImpl implements Station {
 
     @Override
     public List<Employee> getEmployees() {
-        return getList(employees);
-    }
-
-    public List<EmployeeImpl> getLazyEmployees() {
-        return employees;
+        return (List) employees;
     }
 
     public void setEmployees(List<EmployeeImpl> employees) {
-        this.employees = initList(employees);
+        this.employees = employees;
     }
 
     @Override
     public List<Bus> getBuses() {
-        return getList(buses);
-    }
-
-    public List<BusImpl> getLazyBuses() {
-        return buses;
+        return (List) buses;
     }
 
     public void setBuses(List<BusImpl> buses) {
-        this.buses = initList(buses);
+        this.buses = buses;
     }
 
     @Override

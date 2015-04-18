@@ -13,8 +13,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import org.joda.time.DateTime;
+
+import static javax.persistence.TemporalType.TIMESTAMP;
 
 @Entity(name = "RidePoint")
 @Table(name = "ride_points")
@@ -24,11 +25,11 @@ public class RidePointImpl extends BSEntityImpl implements RidePoint {
     @OneToOne
     @JoinColumn(name = "route_point", referencedColumnName = "route_point_id")
     protected RoutePointImpl routePoint;
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TIMESTAMP)
     @Column(name = "arrival_time")
     @Convert(converter = DateTimeConverter.class)
     protected DateTime arrivalTime;
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TIMESTAMP)
     @Column(name = "departure_time")
     @Convert(converter = DateTimeConverter.class)
     protected DateTime departureTime;

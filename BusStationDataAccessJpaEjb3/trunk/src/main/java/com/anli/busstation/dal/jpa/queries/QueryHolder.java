@@ -6,13 +6,13 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class GlobalQueryHolder {
+public class QueryHolder {
 
     protected final JpqlQueryBuilder builder;
     protected final Map<String, EntityQueryHolder> holders;
 
     @Inject
-    public GlobalQueryHolder(JpqlQueryBuilder builder) {
+    public QueryHolder(JpqlQueryBuilder builder) {
         this.builder = builder;
         this.holders = new HashMap<>();
     }

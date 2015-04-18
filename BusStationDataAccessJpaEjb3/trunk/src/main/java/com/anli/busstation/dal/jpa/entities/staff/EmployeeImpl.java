@@ -11,15 +11,16 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import org.eclipse.persistence.annotations.ClassExtractor;
 import org.joda.time.DateTime;
 
+import static javax.persistence.InheritanceType.JOINED;
+import static javax.persistence.TemporalType.TIMESTAMP;
+
 @Entity(name = "Employee")
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = JOINED)
 @ClassExtractor(EmployeeExtractor.class)
 @Table(name = "employees")
 @AttributeOverride(name = "id", column = @Column(name = "employee_id"))
@@ -29,7 +30,7 @@ public abstract class EmployeeImpl extends BSEntityImpl implements Employee {
     protected String name;
     @Column(name = "salary")
     protected BigDecimal salary;
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TIMESTAMP)
     @Column(name = "hiring_date")
     @Convert(converter = DateTimeConverter.class)
     protected DateTime hiringDate;

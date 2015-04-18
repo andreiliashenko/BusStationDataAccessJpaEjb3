@@ -5,22 +5,22 @@ import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.List;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.TableGenerator;
-import org.eclipse.persistence.indirection.IndirectList;
+
+import static javax.persistence.GenerationType.TABLE;
+import static javax.persistence.InheritanceType.TABLE_PER_CLASS;
 
 @MappedSuperclass
-@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+@Inheritance(strategy = TABLE_PER_CLASS)
 @TableGenerator(name = "id_generator", table = "id_generation_sequences", pkColumnName = "entity",
         pkColumnValue = "bs_entity", valueColumnName = "last_id", allocationSize = 1)
 public abstract class BSEntityImpl implements BSEntity {
 
     @Id
-    @GeneratedValue(generator = "id_generator", strategy = GenerationType.TABLE)
+    @GeneratedValue(generator = "id_generator", strategy = TABLE)
     protected BigInteger id;
 
     @Override
@@ -86,8 +86,6 @@ public abstract class BSEntityImpl implements BSEntity {
 
     @Deprecated
     protected boolean nullableListDeepEquals(List<BSEntityImpl> first, List<BSEntityImpl> second) {
-        first = getList(first);
-        second = getList(second);
         if (first == null && second == null) {
             return true;
         }
@@ -108,23 +106,5 @@ public abstract class BSEntityImpl implements BSEntity {
     @Override
     public String toString() {
         return this.getClass().getSimpleName() + " id = " + id;
-    }
-
-    protected boolean isLazyNonInstantiated(List list) {
-        if (list != null && list instanceof IndirectList) {
-            return !((IndirectList) list).isInstantiated();
-        }
-        return false;
-    }
-
-    protected List getList(List list) {
-        return isLazyNonInstantiated(list) ? null : list;
-    }
-
-    protected List initList(List list) {
-        if (isLazyNonInstantiated(list)) {
-            list.size();
-        }
-        return list;
     }
 }

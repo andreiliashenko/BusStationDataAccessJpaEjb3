@@ -6,19 +6,19 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
-public class GlobalRelationHolder {
+public class DescriptorHolder {
 
-    protected final Map<Class, EntityRelationHolder> relationHolders;
-    protected final RelationBuilder relationBuilder;
+    protected final Map<Class, EntityDescriptor> relationHolders;
+    protected final EntityDescriptorBuilder relationBuilder;
 
     @Inject
-    public GlobalRelationHolder(RelationBuilder relationBuilder) {
+    public DescriptorHolder(EntityDescriptorBuilder relationBuilder) {
         this.relationBuilder = relationBuilder;
         this.relationHolders = new HashMap<>();
     }
 
-    public EntityRelationHolder getHolder(Class entityClass) {
-        EntityRelationHolder holder = relationHolders.get(entityClass);
+    public EntityDescriptor getHolder(Class entityClass) {
+        EntityDescriptor holder = relationHolders.get(entityClass);
         if (holder == null) {
             holder = relationBuilder.buildRelation(entityClass);
             relationHolders.put(entityClass, holder);
