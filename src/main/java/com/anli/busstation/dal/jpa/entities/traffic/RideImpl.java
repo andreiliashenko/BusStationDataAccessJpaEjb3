@@ -12,12 +12,13 @@ import java.util.List;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+
+import static javax.persistence.FetchType.LAZY;
 
 @Entity(name = "Ride")
 @Table(name = "rides")
@@ -27,15 +28,15 @@ public class RideImpl extends BSEntityImpl implements Ride {
     @OneToOne
     @JoinColumn(name = "bus", referencedColumnName = "bus_id")
     protected BusImpl bus;
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = LAZY)
     @JoinColumn(name = "ride", referencedColumnName = "ride_id")
     @OrderColumn(name = "ride_order")
     protected List<RidePointImpl> ridePoints;
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = LAZY)
     @JoinColumn(name = "ride", referencedColumnName = "ride_id")
     @OrderColumn(name = "ride_order")
     protected List<RideRoadImpl> rideRoads;
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = LAZY)
     @JoinColumn(name = "ride", referencedColumnName = "ride_id")
     @OrderColumn(name = "ride_order")
     protected List<TicketImpl> tickets;
@@ -52,33 +53,25 @@ public class RideImpl extends BSEntityImpl implements Ride {
 
     @Override
     public List<RidePoint> getRidePoints() {
-        return getList(ridePoints);
-    }
-
-    public List<RidePointImpl> getLazyRidePoints() {
-        return ridePoints;
+        return (List) ridePoints;
     }
 
     public void setRidePoints(List<RidePointImpl> ridePoints) {
-        this.ridePoints = initList(ridePoints);
+        this.ridePoints = ridePoints;
     }
 
     @Override
     public List<RideRoad> getRideRoads() {
-        return getList(rideRoads);
-    }
-
-    public List<RideRoadImpl> getLazyRideRoads() {
-        return rideRoads;
+        return (List) rideRoads;
     }
 
     public void setRideRoads(List<RideRoadImpl> rideRoads) {
-        this.rideRoads = initList(rideRoads);
+        this.rideRoads = rideRoads;
     }
 
     @Override
     public List<Ticket> getTickets() {
-        return getList(tickets);
+        return (List) tickets;
     }
 
     public List<TicketImpl> getLazyTickets() {
@@ -86,7 +79,7 @@ public class RideImpl extends BSEntityImpl implements Ride {
     }
 
     public void setTickets(List<TicketImpl> tickets) {
-        this.tickets = initList(tickets);
+        this.tickets = tickets;
     }
 
     @Override

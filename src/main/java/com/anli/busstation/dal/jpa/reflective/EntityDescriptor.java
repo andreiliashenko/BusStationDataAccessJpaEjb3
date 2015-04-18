@@ -2,14 +2,17 @@ package com.anli.busstation.dal.jpa.reflective;
 
 import java.util.Collection;
 
-public class EntityRelationHolder {
+public class EntityDescriptor {
 
     protected final String entityName;
     protected final Collection<FieldDescriptor> fields;
+    protected final FieldDescriptor idField;
 
-    public EntityRelationHolder(String entityName, Collection<FieldDescriptor> fields) {
+    public EntityDescriptor(String entityName, Collection<FieldDescriptor> fields,
+            FieldDescriptor idField) {
         this.entityName = entityName;
         this.fields = fields;
+        this.idField = idField;
     }
 
     public String getEntityName() {
@@ -18,5 +21,9 @@ public class EntityRelationHolder {
 
     public Collection<FieldDescriptor> getFields() {
         return fields;
+    }
+
+    public FieldDescriptor getIdField() {
+        return idField;
     }
 }

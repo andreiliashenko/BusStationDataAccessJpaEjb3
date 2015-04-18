@@ -33,8 +33,9 @@ public class RegionProviderBean extends AbstractBSProviderBean<Region, RegionImp
     @Override
     public Region pullStations(Region region) {
         RegionImpl originalRegion = (RegionImpl) region;
-        originalRegion.setStations(checkEntityConsistency(originalRegion, false)
-                .getLazyStations());
+        RegionImpl reference = getEntityReference(originalRegion);
+        originalRegion.setStations((List) getCloner()
+                .cloneCollection(reference.getStations(), false));
         return originalRegion;
     }
 

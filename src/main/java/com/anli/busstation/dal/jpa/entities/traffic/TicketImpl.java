@@ -17,8 +17,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import org.joda.time.DateTime;
+
+import static javax.persistence.TemporalType.TIMESTAMP;
 
 @Entity(name = "Ticket")
 @Table(name = "tickets")
@@ -36,7 +37,7 @@ public class TicketImpl extends BSEntityImpl implements Ticket {
     @OneToOne
     @JoinColumn(name = "salesman", referencedColumnName = "employee_id")
     protected SalesmanImpl salesman;
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TIMESTAMP)
     @Column(name = "sale_date")
     @Convert(converter = DateTimeConverter.class)
     protected DateTime saleDate;

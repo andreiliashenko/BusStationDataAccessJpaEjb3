@@ -13,18 +13,19 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import org.eclipse.persistence.annotations.ClassExtractor;
 import org.joda.time.DateTime;
 
+import static javax.persistence.InheritanceType.JOINED;
+import static javax.persistence.TemporalType.TIMESTAMP;
+
 @Entity(name = "TechnicalAssignment")
 @Table(name = "technical_assignments")
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = JOINED)
 @ClassExtractor(TechnicalAssignmentExtractor.class)
 @AttributeOverride(name = "id", column = @Column(name = "assignment_id"))
 public abstract class TechnicalAssignmentImpl extends BSEntityImpl implements TechnicalAssignment {
@@ -32,11 +33,11 @@ public abstract class TechnicalAssignmentImpl extends BSEntityImpl implements Te
     @OneToOne
     @JoinColumn(name = "mechanic", referencedColumnName = "employee_id")
     protected MechanicImpl mechanic;
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TIMESTAMP)
     @Column(name = "begin_time")
     @Convert(converter = DateTimeConverter.class)
     protected DateTime beginTime;
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TIMESTAMP)
     @Column(name = "end_time")
     @Convert(converter = DateTimeConverter.class)
     protected DateTime endTime;

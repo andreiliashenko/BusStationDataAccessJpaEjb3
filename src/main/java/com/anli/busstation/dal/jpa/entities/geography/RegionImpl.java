@@ -8,11 +8,12 @@ import java.util.List;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+
+import static javax.persistence.FetchType.LAZY;
 
 @Entity(name = "Region")
 @Table(name = "regions")
@@ -23,7 +24,7 @@ public class RegionImpl extends BSEntityImpl implements Region {
     protected String name;
     @Column(name = "num_code")
     protected Integer code;
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = LAZY)
     @JoinColumn(name = "region", referencedColumnName = "region_id")
     @OrderColumn(name = "region_order")
     protected List<StationImpl> stations;
@@ -50,15 +51,11 @@ public class RegionImpl extends BSEntityImpl implements Region {
 
     @Override
     public List<Station> getStations() {
-        return getList(stations);
-    }
-
-    public List<StationImpl> getLazyStations() {
-        return stations;
+        return (List) stations;
     }
 
     public void setStations(List<StationImpl> stations) {
-        this.stations = initList(stations);
+        this.stations = stations;
     }
 
     @Override

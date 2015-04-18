@@ -10,11 +10,12 @@ import java.util.List;
 import javax.persistence.AttributeOverride;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderColumn;
 import javax.persistence.Table;
+
+import static javax.persistence.FetchType.LAZY;
 
 @Entity(name = "Route")
 @Table(name = "routes")
@@ -25,11 +26,11 @@ public class RouteImpl extends BSEntityImpl implements Route {
     protected String numCode;
     @Column(name = "ticket_price")
     protected BigDecimal ticketPrice;
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = LAZY)
     @JoinColumn(name = "route", referencedColumnName = "route_id")
     @OrderColumn(name = "route_order")
     protected List<RoutePointImpl> routePoints;
-    @OneToMany(fetch = FetchType.LAZY)
+    @OneToMany(fetch = LAZY)
     @JoinColumn(name = "route", referencedColumnName = "route_id")
     @OrderColumn(name = "route_order")
     protected List<RideImpl> rides;
@@ -56,28 +57,20 @@ public class RouteImpl extends BSEntityImpl implements Route {
 
     @Override
     public List<RoutePoint> getRoutePoints() {
-        return getList(routePoints);
-    }
-
-    public List<RoutePointImpl> getLazyRoutePoints() {
-        return routePoints;
+        return (List) routePoints;
     }
 
     public void setRoutePoints(List<RoutePointImpl> routePoint) {
-        this.routePoints = initList(routePoint);
+        this.routePoints = routePoint;
     }
 
     @Override
     public List<Ride> getRides() {
-        return getList(rides);
-    }
-
-    public List<RideImpl> getLazyRides() {
-        return rides;
+        return (List) rides;
     }
 
     public void setRides(List<RideImpl> rides) {
-        this.rides = initList(rides);
+        this.rides = rides;
     }
 
     @Override

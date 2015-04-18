@@ -3,17 +3,16 @@ package com.anli.busstation.dal.ejb3.providers;
 import com.anli.busstation.dal.ejb3.exceptions.ManageableConsistencyException;
 import com.anli.busstation.dal.interfaces.entities.BSEntity;
 import com.anli.busstation.dal.interfaces.providers.BSEntityProvider;
-import com.anli.busstation.dal.jpa.reflective.EntityRelationHolder;
-import com.anli.busstation.dal.jpa.reflective.GlobalRelationHolder;
 import com.anli.busstation.dal.jpa.entities.BSEntityImpl;
 import com.anli.busstation.dal.jpa.queries.EntityQueryHolder;
 import com.anli.busstation.dal.jpa.queries.FieldQueryHolder;
-import com.anli.busstation.dal.jpa.queries.GlobalQueryHolder;
-import com.anli.busstation.dal.jpa.reflective.FieldDescriptor;
+import com.anli.busstation.dal.jpa.queries.QueryHolder;
+import com.anli.busstation.dal.jpa.reflective.EntityCloner;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import javax.ejb.TransactionAttribute;
@@ -24,7 +23,6 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
-import org.eclipse.persistence.indirection.IndirectCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,10 +38,10 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
     protected EntityManager manager;
 
     @Inject
-    protected GlobalQueryHolder queryHolder;
+    protected QueryHolder queryHolder;
 
     @Inject
-    protected GlobalRelationHolder relationHolder;
+    protected EntityCloner cloner;
 
     protected abstract E getEntityInstance();
 
@@ -53,80 +51,17 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
         return manager;
     }
 
-    protected EntityQueryHolder getQueryHolder() {
+    protected QueryHolder getQueryHolder() {
+        return queryHolder;
+    }
+
+    protected EntityCloner getCloner() {
+        return cloner;
+    }
+
+    protected EntityQueryHolder getEntityQueryHolder() {
         String entityName = getEntityClass().getAnnotation(Entity.class).name();
-        return queryHolder.getHolder(entityName);
-    }
-
-    protected BSEntity getEntityReference(BSEntity entity, Class<? extends BSEntity> entityClass) {
-        try {
-            BSEntity reference = getManager().getReference(entityClass, entity.getId());
-            reference.getId();
-            return reference;
-        } catch (EntityNotFoundException enfException) {
-            LOG.error("Entity could not be found", enfException);
-            return null;
-        }
-    }
-
-    protected E getMainEntityReference(E entity) {
-        return (E) getEntityReference(entity, getEntityClass());
-    }
-
-    protected Collection<BSEntity> getInconsistentCollectionElements(Collection<BSEntity> collection,
-            Class<? extends BSEntity> entityClass) {
-        LinkedList<BSEntity> inconsistentEntities = new LinkedList<>();
-        if (collection == null) {
-            return inconsistentEntities;
-        }
-        for (BSEntity entity : collection) {
-            if (getEntityReference(entity, entityClass) == null) {
-                inconsistentEntities.add(entity);
-            }
-        }
-        return inconsistentEntities;
-    }
-
-    protected Collection<BSEntity> getInconsistentReferences(E entity) {
-        EntityRelationHolder relations = relationHolder.getHolder(getEntityClass());
-        Collection<BSEntity> inconsistent = new LinkedList<>();
-        for (FieldDescriptor field : relations.getFields()) {
-            addFieldInconsistentEntities(entity, field, inconsistent);
-        }
-        return inconsistent;
-    }
-
-    protected void addFieldInconsistentEntities(E entity, FieldDescriptor field,
-            Collection<BSEntity> inconsistent) {
-        Object fieldValue;
-        try {
-            fieldValue = field.getField().get(entity);
-        } catch (IllegalAccessException ex) {
-            LOG.error("Could not access reference field", ex);
-            throw new RuntimeException(ex);
-        }
-        if (field.isCollection()) {
-            inconsistent.addAll(getInconsistentCollectionElements((Collection) fieldValue,
-                    field.getElementClass()));
-        } else if (fieldValue != null && !(fieldValue instanceof IndirectCollection)
-                && getEntityReference((BSEntity) fieldValue, field.getElementClass()) == null) {
-            inconsistent.add((BSEntity) fieldValue);
-        }
-    }
-
-    protected E checkEntityConsistency(E entity, boolean checkReferences) {
-        E consistent = getMainEntityReference(entity);
-        if (consistent == null) {
-            throw new ManageableConsistencyException(Arrays.asList((BSEntity) entity), null);
-        }
-        if (!checkReferences) {
-            return consistent;
-        }
-        Collection<BSEntity> inconsistent = getInconsistentReferences(entity);
-        if (!inconsistent.isEmpty()) {
-            throw new ManageableConsistencyException(inconsistent, null);
-        }
-        return consistent;
+        return getQueryHolder().getHolder(entityName);
     }
 
     protected void setQueryParameters(Query query, Collection parameters) {
@@ -160,7 +95,8 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
     }
 
     protected List<I> findByQuery(String query, Collection parameters, boolean named) {
-        return (List) selectByQuery(query, parameters, getEntityClass(), named);
+        return (List) getCloner().cloneCollection(selectByQuery(query, parameters,
+                getEntityClass(), named));
     }
 
     protected List<BigInteger> collectIdsByQuery(String query, Collection parameters) {
@@ -172,7 +108,7 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
     }
 
     protected List<I> findByEquals(String field, Object value) {
-        FieldQueryHolder fieldHolder = getQueryHolder().getFieldHolder(field);
+        FieldQueryHolder fieldHolder = getEntityQueryHolder().getFieldHolder(field);
         if (value != null) {
             return findByQuery(fieldHolder.getSelectByEquals(), Arrays.asList(value));
         } else {
@@ -182,7 +118,7 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
     }
 
     protected List<BigInteger> collectIdsByEquals(String field, Object value) {
-        FieldQueryHolder fieldHolder = getQueryHolder().getFieldHolder(field);
+        FieldQueryHolder fieldHolder = getEntityQueryHolder().getFieldHolder(field);
         if (value != null) {
             return collectIdsByQuery(fieldHolder.getCollectByEquals(), Arrays.asList(value));
         } else {
@@ -194,7 +130,7 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
         if (values == null || values.isEmpty()) {
             return new LinkedList<>();
         }
-        String query = getQueryHolder().getFieldHolder(field).getSelectByAny();
+        String query = getEntityQueryHolder().getFieldHolder(field).getSelectByAny();
         return findByQuery(query, Arrays.asList(values));
     }
 
@@ -202,7 +138,7 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
         if (values == null || values.isEmpty()) {
             return new LinkedList<>();
         }
-        String query = getQueryHolder().getFieldHolder(field).getCollectByAny();
+        String query = getEntityQueryHolder().getFieldHolder(field).getCollectByAny();
         return collectIdsByQuery(query, Arrays.asList(values));
     }
 
@@ -210,7 +146,7 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
         if (value == null) {
             return new LinkedList<>();
         }
-        String query = getQueryHolder().getFieldHolder(field).getSelectByContains();
+        String query = getEntityQueryHolder().getFieldHolder(field).getSelectByContains();
         return findByQuery(query, Arrays.asList(value));
     }
 
@@ -218,17 +154,17 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
         if (value == null) {
             return new LinkedList<>();
         }
-        String query = getQueryHolder().getFieldHolder(field).getCollectByContains();
+        String query = getEntityQueryHolder().getFieldHolder(field).getCollectByContains();
         return collectIdsByQuery(query, Arrays.asList(value));
     }
 
     protected List<I> findByRegexp(String field, String regexp) {
-        String query = getQueryHolder().getFieldHolder(field).getSelectByRegexp();
+        String query = getEntityQueryHolder().getFieldHolder(field).getSelectByRegexp();
         return findByQuery(query, Arrays.asList(regexp));
     }
 
     protected List<BigInteger> collectIdsByRegexp(String field, String regexp) {
-        String query = getQueryHolder().getFieldHolder(field).getCollectByRegexp();
+        String query = getEntityQueryHolder().getFieldHolder(field).getCollectByRegexp();
         return collectIdsByQuery(query, Arrays.asList(regexp));
     }
 
@@ -237,7 +173,7 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
         if (leftValue == null && rightValue == null) {
             return findAll();
         }
-        FieldQueryHolder holder = getQueryHolder().getFieldHolder(field);
+        FieldQueryHolder holder = getEntityQueryHolder().getFieldHolder(field);
         String query;
         ArrayList parameters = new ArrayList(2);
         boolean isLeft = leftValue != null;
@@ -261,7 +197,7 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
         if (leftValue == null && rightValue == null) {
             return collectIdsAll();
         }
-        FieldQueryHolder holder = getQueryHolder().getFieldHolder(field);
+        FieldQueryHolder holder = getEntityQueryHolder().getFieldHolder(field);
         String query;
         ArrayList parameters = new ArrayList(2);
         boolean isLeft = leftValue != null;
@@ -280,6 +216,15 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
         return collectIdsByQuery(query, parameters);
     }
 
+    protected E getEntityReference(E entity) {
+        E reference = getManager().find(getEntityClass(), entity.getId());
+        if (reference == null) {
+            throw new ManageableConsistencyException(Collections
+                    .<BSEntity>singletonList(entity), null);
+        }
+        return reference;
+    }
+
     @Override
     public I create() {
         E entity = getEntityInstance();
@@ -287,22 +232,26 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
             return null;
         }
         getManager().persist(entity);
-        return (I) entity;
+        return (I) getCloner().clone(entity);
     }
 
     @Override
     public I save(I entity) {
         E concreteEntity = (E) entity;
-        checkEntityConsistency(concreteEntity, true);
-        getManager().merge(concreteEntity);
+        E reference = getEntityReference(concreteEntity);
+        List inconsistent = getCloner().populateEntity(concreteEntity,
+                reference, getManager());
+        if (!inconsistent.isEmpty()) {
+            LOG.error("Could not find entities : " + inconsistent);
+            throw new ManageableConsistencyException((Collection) inconsistent, null);
+        }
         return entity;
     }
 
     @Override
     public void remove(I entity) {
         E concreteEntity = (E) entity;
-        checkEntityConsistency(concreteEntity, false);
-        E toRemove = getManager().find(getEntityClass(), concreteEntity.getId());
+        E toRemove = getEntityReference(concreteEntity);
         getManager().remove(toRemove);
     }
 
@@ -311,16 +260,16 @@ public abstract class AbstractBSProviderBean<I extends BSEntity, E extends BSEnt
         if (id == null) {
             return null;
         }
-        return (I) getManager().find(getEntityClass(), id);
+        return (I) getCloner().clone(getManager().find(getEntityClass(), id));
     }
 
     @Override
     public List<I> findAll() {
-        return findByQuery(getQueryHolder().getSelectAll(), null);
+        return findByQuery(getEntityQueryHolder().getSelectAll(), null);
     }
 
     @Override
     public List<BigInteger> collectIdsAll() {
-        return collectIdsByQuery(getQueryHolder().getCollectKeysAll(), null);
+        return collectIdsByQuery(getEntityQueryHolder().getCollectKeysAll(), null);
     }
 }

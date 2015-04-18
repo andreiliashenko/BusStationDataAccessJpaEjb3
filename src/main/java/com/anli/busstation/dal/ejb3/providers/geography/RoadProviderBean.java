@@ -55,11 +55,9 @@ public class RoadProviderBean extends AbstractBSProviderBean<Road, RoadImpl>
     @Override
     public List<Road> findByStation(Station station) {
         if (station == null) {
-            return (List) getManager().createNamedQuery("Road.findByNullStation", getEntityClass())
-                    .getResultList();
+            return findByQuery("Road.findByNullStation", Collections.emptyList(), true);
         } else {
-            return (List) getManager().createNamedQuery("Road.findByStation", getEntityClass())
-                    .setParameter(1, station).getResultList();
+            return findByQuery("Road.findByStation", Collections.singletonList(station), true);
         }
     }
 
@@ -68,8 +66,8 @@ public class RoadProviderBean extends AbstractBSProviderBean<Road, RoadImpl>
         if (stations == null || stations.isEmpty()) {
             return Collections.emptyList();
         } else {
-            return (List) getManager().createNamedQuery("Road.findByAnyStation", getEntityClass())
-                    .setParameter(1, stations).getResultList();
+            return findByQuery("Road.findByAnyStation",
+                    Collections.singletonList(stations), true);
         }
     }
 
@@ -108,11 +106,10 @@ public class RoadProviderBean extends AbstractBSProviderBean<Road, RoadImpl>
     @Override
     public List<BigInteger> collectIdsByStation(Station station) {
         if (station == null) {
-            return getManager().createNamedQuery("Road.collectIdsByNullStation", BigInteger.class)
-                    .getResultList();
+            return collectIdsByQuery("Road.collectIdsByNullStation", Collections.emptyList(), true);
         } else {
-            return getManager().createNamedQuery("Road.collectIdsByStation", BigInteger.class)
-                    .setParameter(1, station).getResultList();
+            return collectIdsByQuery("Road.collectIdsByStation",
+                    Collections.singletonList(station), true);
         }
     }
 
@@ -121,8 +118,8 @@ public class RoadProviderBean extends AbstractBSProviderBean<Road, RoadImpl>
         if (stations == null || stations.isEmpty()) {
             return Collections.emptyList();
         } else {
-            return getManager().createNamedQuery("Road.collectIdsByAnyStation", BigInteger.class)
-                    .setParameter(1, stations).getResultList();
+            return collectIdsByQuery("Road.collectIdsByAnyStation",
+                    Collections.singletonList(stations), true);
         }
     }
 
